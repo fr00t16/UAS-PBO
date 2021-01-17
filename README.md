@@ -49,6 +49,7 @@ Fitur Yang di harapkan:
 - Simpan script ke folder localhost  / hosting 
 - Upload PBO_UAS.sql di mysql phpmyadmin / program manajemen database (ex Navicate)
 - Setting configurasi database di class/class_koneksi.php
+- Login admin : admin, password : admin
 
 
 :+1: Progress pembuatan berjalan sejak 12 januari 2021, Tetap santuy walaupun mepet :shipit:
