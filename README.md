@@ -4,14 +4,14 @@
 </p>
 
 
+# Info :
+- PHP 7
+- Database MySQL
+- Template Tema by : https://github.com/puikinsh/concept
+
 # Dibuat pada:
 12 Januari 2021
 
-# Template Tema
-
-
-
-https://github.com/puikinsh/concept
 
 # UAS-PBO
 Matakuliah PBO
