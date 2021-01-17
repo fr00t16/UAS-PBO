@@ -42,8 +42,7 @@ Fitur Yang di harapkan:
 
 
 # Cara Penggunaan
-- pastikan download : https://github.com/fr00t16/UAS-PBO/archive/main.zip 
-- clone file dengan git : git clone https://github.com/fr00t16/UAS-PBO.git
+- pastikan download : https://github.com/fr00t16/UAS-PBO/archive/main.zip atau clone file dengan git : git clone https://github.com/fr00t16/UAS-PBO.git
 
 
 - Simpan script ke folder localhost  / hosting 
