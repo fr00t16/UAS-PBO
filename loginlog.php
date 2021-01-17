@@ -2,7 +2,7 @@
   require_once 'class/class.php';
   $pengguna = new Pengguna();
 
-  if(!$pengguna->IsLogged())
+  if(!$pengguna->IsLogged() || !$pengguna->IsAdmin($_SESSION['username']))
   {
     header('location: index.php');
     exit();

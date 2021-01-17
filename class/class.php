@@ -14,6 +14,7 @@ Rifki Renaldi
 
 session_start();
 require 'class_koneksi.php';
+date_default_timezone_set("Asia/Jakarta");
 
 class Pengguna
 {
@@ -72,6 +73,12 @@ class Pengguna
 			return true;
 		}
 		return false;
+	}
+
+	public function Hapusvoc($id)
+	{
+		$result = $this->db->hapus("sql_voucher", "vid", $id);
+		return $result;
 	}
 
 	public function Gantipass($oldpassword, $npassword, $renpassword) // fungsi daftar akun
@@ -169,6 +176,64 @@ class Pengguna
 	}
 
 
+	public function BuatVoucher($key, $balance) // fungsi buat voucher
+	{
+		$key    	= $this->db->antisqlinjection($key);
+		$balance	= $this->db->antisqlinjection($balance);
+
+		if(!$this->db->tersedia("sql_voucher", "key", $key))
+		{	
+			$result = $this->db->query("INSERT INTO `sql_voucher` (`vid`, `key`, `balance`, `dibuatoleh`) VALUES (NULL, '".$key."', '".$balance."', '".$_SESSION['username']."');");
+
+			if($result)
+			{
+				echo "<script>alert('Voucher berhasil di buat');</script><script>window.history.back()</script>"; 
+			}
+			else
+			{
+				echo "<script>alert('Terjadi kesalah!');</script><script>window.history.back()</script>";
+			}	
+		}
+		else
+		{
+			echo "<script>alert('Key Voucher tersebut sudah di gunakan coba buat lagi!');</script><script>window.history.back()</script>"; 
+		}
+	}
+
+
+
+
+	public function Reedemvoucher($key) // fungsi reedemcode
+	{
+		$key = $this->db->antisqlinjection($key);
+
+		if($this->db->tersedia("sql_voucher", "key", $key))
+		{
+			$ambil = $this->db->select("SELECT * FROM `sql_voucher` WHERE `key` = '$key'");
+			$balance = $ambil[0]['balance'];
+			$status = $ambil[0]['status'];
+
+			if($status >= 1)
+			{
+				echo "<script>alert('Kode yang kamu input sudah di reedem oleh orang lain!');</script><script>window.history.back()</script>";
+			}
+			else
+			{
+				$this->db->query("UPDATE `pengguna` SET `diamond` = diamond + '$balance' WHERE `username` = '".$_SESSION['username']."';");
+				$this->db->query("UPDATE `sql_voucher` SET `status` = '1', `reedemby` = '".$_SESSION['username']."' WHERE `key` = '$key';");
+
+				echo "<script>alert('Kode berhasil di REEDEM!');</script><script>window.history.back()</script>"; 
+			}
+		}
+		else
+		{
+			echo "<script>alert('Key yang kamu masukan tidak dikenal!');</script><script>window.history.back()</script>"; 
+			return true;
+		}
+		return false;
+	}
+
+
 	public function DatapatkanIP() // fungsi pendapat ip 
 	{
 		$ip = $_SERVER['REMOTE_ADDR'];	
@@ -177,7 +242,7 @@ class Pengguna
 
 	public function Getnamefromid($id)
 	{
-		$result = $this->db->select("SELECT username as nama FROM pengguna JOIN log_login WHERE log_login.id_pengguna = pengguna.id;");
+		$result = $this->db->select("SELECT username as nama FROM pengguna JOIN log_login WHERE '$id' = pengguna.id;");
 		return $result[0]['nama'];
 	}
 
@@ -215,6 +280,11 @@ class Pengguna
 		return $result;
 	}
 
+	public function Pilihsemuavoucher()
+	{
+		$result = $this->db->select("SELECT * FROM sql_voucher");
+		return $result;
+	}
 
 
 	public function Pilihloglogin()
@@ -230,7 +300,7 @@ class Pengguna
 		
 		$filed = $result[0][$field];
 
-		$result = "$".number_format($filed, 0);
+		$result = number_format($filed, 0);
 		return $result;
 	}
 
@@ -246,6 +316,12 @@ class Pengguna
 	public function dolarformatall($field)
 	{
 		$result = "$".number_format($field, 0);
+		return $result;
+	}
+
+	public function FormatNumber($field)
+	{
+		$result = number_format($field, 0);
 		return $result;
 	}
 
@@ -290,6 +366,19 @@ class Pengguna
 		return $result;
 	}
 
+
+	public function statusvoucher($field)
+	{
+		if($field >= 1)
+		{
+			$result = 'Terpakai';
+		}
+		else
+		{
+			$result = 'Belum Terpakai';
+		}
+		return $result;
+	}
 
 	public function DapatkanPerangkatUser() // daopat perangkat webbrowser
 	{

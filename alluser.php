@@ -2,10 +2,22 @@
   require_once 'class/class.php';
   $pengguna = new Pengguna();
 
-  if(!$pengguna->IsLogged())
+  if(!$pengguna->IsLogged() || !$pengguna->IsAdmin($_SESSION['username']))
   {
     header('location: index.php');
     exit();
+  }
+
+  if(isset($_GET['del'])) 
+  {
+    if($pengguna->Hapuspengguna($_GET['del']))
+    {
+        echo "<script>alert('Berhasil menghapus Voucher');</script><script>window.history.back()</script>";
+    }
+    else
+    {
+        echo "<script>alert('Gagal menghapus voucher');</script><script>window.history.back()</script>";
+    }
   }
 ?>
 
@@ -147,7 +159,6 @@
                                                 <th>Uang</th>
                                                 <th>Diamond</th>
                                                 <th>Jenis Kelamin</th>
-                                                <th>Opsi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -161,8 +172,6 @@
                                             <td><?php echo $pengguna->dolarformatall($data['uang']);?></td>
                                             <td><?php echo $pengguna->dolarformatall($data['diamond']);?></td>
                                             <td><?php echo $pengguna->kelaminall($data['kelamin']);?></td>
-                                            <td><a class="btn btn-space btn-primary" href="kontak_form_edit.php?id=<?php echo $data['id'];?>">Edit</a> 
-                                            <a class="btn btn-space btn-danger" href="kontak_delete.php?id=<?php echo $data['id'];?>">Delete</a></td>
                                           </tr>
                                           <?php } ?>  
                                         </tbody>

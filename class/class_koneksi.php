@@ -53,7 +53,7 @@ class Db
 		
 		if($this->tersedia($tabel, $kolom, $nilai) == 1)
 		{
-			$hasil = $this->query("DELETE FROM $tabel WHERE $kolom =".$nilai);
+			$hasil = $this->query("DELETE FROM `$tabel` WHERE `$kolom` =".$nilai);
 			return TRUE;
 		}
 		else
@@ -65,7 +65,7 @@ class Db
 	public function	tersedia($tabel, $kolom, $nilai) 
 	{
 		$koneksi = $this->konek();
-        $hasil = $koneksi->query("SELECT * FROM $tabel WHERE $kolom = '".$nilai."'");
+        $hasil = $koneksi->query("SELECT * FROM `$tabel` WHERE `$kolom` = '".$nilai."'");
 		if($hasil == TRUE)
 		{
 			if($hasil->num_rows == 1) 

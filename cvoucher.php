@@ -2,7 +2,7 @@
   require_once 'class/class.php';
   $pengguna = new Pengguna();
 
-  if(!$pengguna->IsLogged())
+  if(!$pengguna->IsLogged() || !$pengguna->IsAdmin($_SESSION['username']))
   {
     header('location: index.php');
     exit();
@@ -19,6 +19,38 @@
 
     }
 
+  if(isset($_POST['cvoucher']))
+  {
+
+
+    if(empty($_POST['rvoc']))
+     echo "<script>alert('Result voc tidak boleh kosong!');</script><script>window.history.back()</script>";
+    else if(empty($_POST['jvoc']))
+     echo "<script>alert('Jumlah nominal voc tidak boleh kosong!');</script><script>window.history.back()</script>";
+    else if($_POST['jvoc']<= 0)
+     echo "<script>alert('Balance voucher tidak boleh  kurang dari sama dengan 0');</script><script>window.history.back()</script>";
+    else
+    {
+      $rvoc = $_POST['rvoc'];
+      $jvoc = $_POST['jvoc'];
+
+      $pengguna->BuatVoucher($rvoc, $jvoc);
+    }
+
+  }
+
+  if(isset($_GET['del'])) 
+  {
+    if($pengguna->Hapusvoc($_GET['del']))
+    {
+        echo "<script>alert('Berhasil menghapus Voucher');</script><script>window.history.back()</script>";
+    }
+    else
+    {
+        echo "<script>alert('Gagal menghapus voucher');</script><script>window.history.back()</script>";
+    }
+  }
+  
     $randomvar = strtoupper(gaskeun());
 ?>
 
@@ -148,12 +180,12 @@
                                 <div class="card-body">
                                     <form method="POST" id="basicform" data-parsley-validate="">
                                         <div class="form-group">
-                                            <label for="resultvoc">Result</label>
-                                            <input id="resultvoc" type="text" name="resultvoc" data-parsley-trigger="change" required="" placeholder="<?php echo $randomvar; ?>" autocomplete="off" class="form-control" readonly>
+                                            <label for="rvoc">Result</label>
+                                            <input id="rvoc" name="rvoc" type="text"  value="<?php echo $randomvar; ?>" class="form-control" readonly>
                                         </div>
                                         <div class="form-group">
-                                            <label for="jumlahvoc">Jumlah saldo voucher</label>
-                                            <input id="jumlahvoc" type="text" name="name" data-parsley-trigger="change" required="" placeholder="Jumlah saldo voucher DM" autocomplete="off" class="form-control">
+                                            <label for="jvoc">Jumlah saldo voucher</label>
+                                            <input id="jvoc" name="jvoc" type="text" placeholder="Jumlah saldo voucher DM" class="form-control">
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6 pb-2 pb-sm-4 pb-lg-0 pr-0">
@@ -161,8 +193,8 @@
                                                 </label>
                                             </div>
                                             <div class="form-group m-0">
-                                              <button type="submit" name="changepass" value="changepass" class="btn btn-primary btn-block">
-                                                Createvoucher
+                                              <button type="submit" name="cvoucher" value="cvoucher" class="btn btn-primary btn-block">
+                                                Buat Voucher
                                               </button>
                                             </div>
                                         </div>
@@ -170,6 +202,42 @@
                                 </div>
                             </div>
                         </div>
+                          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="card">
+                                    <h5 class="card-header">List Voucher</h5>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="example" class="table table-striped table-bordered second" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Key</th>
+                                                        <th>status</th>
+                                                        <th>Balance</th>
+                                                        <th>Dibuat oleh</th>
+                                                        <th>Reedem By</th>
+                                                        <th>Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <?php $i=0; foreach($pengguna->Pilihsemuavoucher() as $data) 
+                                                  {  $i++; ?>
+                                                  <tr>
+                                                    <td><?php echo @$i ?></td>
+                                                    <td><?php echo $data['key'];?></td> 
+                                                    <td><?php echo $pengguna->statusvoucher($data['status']);?></td>
+                                                    <td><?php echo $pengguna->FormatNumber($data['balance']);?></td>
+                                                    <td><?php echo $data['dibuatoleh'];?></td>  
+                                                    <td><?php echo $data['reedemby'];?></td>
+                                                    <td><a class="btn btn-space btn-danger" href="cvoucher.php?del=<?php echo $data['vid'];?>">Delete</a></td>
+                                                  </tr>
+                                                  <?php } ?>  
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>

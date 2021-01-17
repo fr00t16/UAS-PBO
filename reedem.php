@@ -7,6 +7,21 @@
     header('location: index.php');
     exit();
   }
+
+  if(isset($_POST['reedem']))
+  {
+
+
+    if(empty($_POST['voucher']))
+     echo "<script>alert('Form voucher tidak boleh kosong!');</script><script>window.history.back()</script>";
+    else
+    {
+      $key = $_POST['voucher'];
+
+      $pengguna->Reedemvoucher($key);
+    }
+
+  }
 ?>
 
 <!doctype html>
@@ -133,10 +148,10 @@
                             <div class="card">
                                 <h5 class="card-header">Reedem Voucher</h5>
                                 <div class="card-body">
-                                    <form action="#" id="basicform" data-parsley-validate="">
+                                    <form method="POST" id="basicform" data-parsley-validate="">
                                         <div class="form-group">
                                             <label for="Voucher">Input Voucher</label>
-                                            <input id="voucher" type="text" name="name" data-parsley-trigger="change" required="" placeholder="EX: JF2A-ZHW2-JGV2-IUX6-V2KZ" autocomplete="off" class="form-control">
+                                            <input id="voucher" type="text" name="voucher" data-parsley-trigger="change" required="" placeholder="EX: JF2A-ZHW2-JGV2-IUX6-V2KZ" autocomplete="off" class="form-control">
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-6 pb-2 pb-sm-4 pb-lg-0 pr-0">
@@ -145,7 +160,9 @@
                                             </div>
                                             <div class="col-sm-6 pl-0">
                                                 <p class="text-right">
-                                                    <button type="submit" value="reedem" class="btn btn-space btn-primary">reedem</button>
+                                                  <button type="submit" name="reedem" value="reedem" class="btn btn-primary btn-block">
+                                                    Reedem
+                                                  </button>
                                                 </p>
                                             </div>
                                         </div>
